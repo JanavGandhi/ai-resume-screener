@@ -22,4 +22,6 @@ def extract_docx_text(filename: str) -> str:
     return "\n".join(p.text for p in doc.paragraphs)
 
 if __name__ == "__main__":
-    print("Environment and extraction module ready")
+    text = extract_pdf_text("resume.pdf")
+    print(text[:1000])  # print first 1000 chars
+
