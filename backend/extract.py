@@ -20,8 +20,3 @@ def extract_docx_text(filename: str) -> str:
 
     doc = Document(path)
     return "\n".join(p.text for p in doc.paragraphs)
-
-if __name__ == "__main__":
-    text = extract_pdf_text("resume.pdf")
-    print(text[:1000])  # print first 1000 chars
-
