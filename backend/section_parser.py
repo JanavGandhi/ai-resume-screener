@@ -1,5 +1,5 @@
 import re
-from typing import Dict
+from typing import Dict, Tuple
 
 SECTION_HEADERS = {
     "skills": [
@@ -14,37 +14,51 @@ SECTION_HEADERS = {
 }
 
 def normalize_text(text: str) -> str:
-    # Normalize spacing and casing
     text = text.replace("\r", "\n")
     text = re.sub(r"\n{2,}", "\n", text)
     return text.lower()
 
-def find_section_indices(text: str) -> Dict[str, int]:
+def find_section_indices(text: str) -> Dict[str, Tuple[int, str]]:
+    """
+    Returns:
+        section -> (start_index, matched_header)
+    """
     indices = {}
+
     for section, headers in SECTION_HEADERS.items():
         for header in headers:
-            pattern = rf"\b{re.escape(header)}\b"
-            match = re.search(pattern, text)
+            pattern = rf"^\s*{re.escape(header)}\s*$"
+            match = re.search(pattern, text, re.MULTILINE)
             if match:
-                indices[section] = match.start()
+                indices[section] = (match.start(), header)
                 break
+
     return indices
+
+def remove_header(text: str, header: str) -> str:
+    pattern = rf"^\s*{re.escape(header)}\s*$"
+    return re.sub(pattern, "", text, count=1, flags=re.MULTILINE).strip()
 
 def split_sections(text: str) -> Dict[str, str]:
     normalized = normalize_text(text)
     indices = find_section_indices(normalized)
 
-    # Sort sections by appearance order
-    sorted_sections = sorted(indices.items(), key=lambda x: x[1])
+    sorted_sections = sorted(
+        indices.items(),
+        key=lambda x: x[1][0]
+    )
 
     result = {key: "" for key in SECTION_HEADERS.keys()}
 
-    for i, (section, start_idx) in enumerate(sorted_sections):
+    for i, (section, (start_idx, header)) in enumerate(sorted_sections):
         end_idx = (
-            sorted_sections[i + 1][1]
+            sorted_sections[i + 1][1][0]
             if i + 1 < len(sorted_sections)
             else len(normalized)
         )
-        result[section] = normalized[start_idx:end_idx].strip()
+
+        content = normalized[start_idx:end_idx]
+        content = remove_header(content, header)
+        result[section] = content.strip()
 
     return result
