@@ -1,5 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from .extract import extract_pdf_text
 from .section_parser import split_sections
@@ -19,6 +21,14 @@ def to_float(x):
 
 
 app = FastAPI(title="AI Resume Screener")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 class JobDescription(BaseModel):
     text: str
