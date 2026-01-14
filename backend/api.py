@@ -1,13 +1,22 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Form
 from pydantic import BaseModel
 
-from extract import extract_pdf_text
-from section_parser import split_sections
-from text_cleaner import clean_text
-from tfidf_matcher import compute_similarity as tfidf_score
-from bert_matcher import compute_semantic_similarity as bert_score
-from explain_skills import common_skills
-from explain_sentences import top_matching_sentences
+from .extract import extract_pdf_text
+from .section_parser import split_sections
+from .text_cleaner import clean_text
+from .tfidf_matcher import compute_similarity as tfidf_score
+from .bert_matcher import compute_semantic_similarity as bert_score
+from .explain_skills import common_skills
+from .explain_sentences import top_matching_sentences
+
+import numpy as np
+
+def to_float(x):
+    if isinstance(x, np.generic):
+        return float(x)
+    return x
+
+
 
 app = FastAPI(title="AI Resume Screener")
 
@@ -16,7 +25,7 @@ class JobDescription(BaseModel):
 
 @app.post("/analyze-resume")
 async def analyze_resume(
-    jd: JobDescription,
+    jd_text: str = Form(...),
     resume: UploadFile = File(...)
 ):
     # Save uploaded resume temporarily
@@ -34,23 +43,26 @@ async def analyze_resume(
     ])
 
     resume_clean = clean_text(resume_combined)
-    jd_clean = clean_text(jd.text)
+    jd_clean = clean_text(jd_text)
 
     tfidf = tfidf_score(resume_clean, jd_clean)
     bert = bert_score(resume_clean, jd_clean)
 
-    skills = common_skills(sections.get("skills", ""), jd.text)
+    skills = common_skills(sections.get("skills", ""), jd_text)
     top_sentences = top_matching_sentences(
         sections.get("experience", ""),
-        jd.text
+        jd_text
     )
 
     return {
-        "tfidf_score": round(tfidf, 4),
-        "bert_score": round(bert, 4),
+        "tfidf_score": to_float(round(tfidf, 4)),
+        "bert_score": to_float(round(bert, 4)),
         "common_skills": list(skills),
         "top_sentences": [
-            {"sentence": s, "score": round(sc, 3)}
+            {
+                "sentence": s,
+                "score": to_float(round(sc, 3))
+            }
             for s, sc in top_sentences
         ]
     }
