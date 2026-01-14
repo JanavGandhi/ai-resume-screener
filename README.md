@@ -1,4 +1,4 @@
-🧠 AI Resume Screener — Full-Stack, Explainable ML System
+🧠 #AI Resume Screener — Full-Stack, Explainable ML System
 
 An AI-powered resume screening platform that semantically matches resumes to job descriptions using modern NLP techniques.
 Built as a full-stack application with a React frontend and FastAPI backend, designed with explainability and production readiness in mind.
@@ -57,3 +57,4 @@ scikit-learn (TF-IDF)
 Sentence-Transformers (BERT)
 
 NLTK (text processing)
+
