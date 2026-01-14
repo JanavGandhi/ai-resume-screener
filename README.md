@@ -1,33 +1,37 @@
-🧠 AI Resume Screener — Full-Stack, Explainable ML System
+# 🧠 AI Resume Screener
+Full-Stack, Explainable Machine Learning System
 
 An AI-powered resume screening platform that semantically matches resumes to job descriptions using modern NLP techniques.
 Built as a full-stack application with a React frontend and FastAPI backend, designed with explainability and production readiness in mind.
 
-🚀 Features
+## 🚀 Features
+### 📄 Resume Upload
 
-📄 Resume Upload (PDF)
+Upload resumes in PDF format
 
-📝 Job Description Input
+### 📝 Job Description Input
 
-📊 Relevance Scoring
+Paste job descriptions directly into the UI
 
-TF-IDF (lexical similarity baseline)
+### 📊 Relevance Scoring
 
-Sentence-BERT (semantic similarity)
+TF-IDF — lexical similarity baseline
 
-🔍 Explainable AI Outputs
+Sentence-BERT — semantic similarity matching
 
-Common skill overlap
+### 🔍 Explainable AI Outputs
 
-Top matching resume sentences with scores
+Common skill overlap between resume and JD
 
-🌐 Full-Stack Architecture
+Top matching resume sentences with relevance scores
+
+### 🌐 Full-Stack Architecture
 
 React (Vite) frontend
 
 FastAPI backend
 
-🧪 Production-grade API
+### 🛡️ Production-Grade API
 
 Multipart file handling
 
@@ -35,27 +39,58 @@ JSON-safe ML outputs
 
 CORS-enabled for browser access
 
-🧱 Tech Stack
-Frontend
+### 🧱 Tech Stack
+#### Frontend
 
 React (Vite)
 
 JavaScript
 
-HTML/CSS (inline styling)
+HTML / CSS
 
-Backend
+#### Backend
 
 FastAPI
 
 Python 3
 
-pdfplumber (PDF parsing)
+pdfplumber
 
-scikit-learn (TF-IDF)
+scikit-learn
 
-Sentence-Transformers (BERT)
+### 🏗️ System Architecture
+React Frontend (localhost:5173)
+        |
+        |  multipart/form-data
+        |
+FastAPI Backend (localhost:8000)
+        |
+        |  NLP + ML Pipeline
+        |
+TF-IDF + Sentence-BERT + Explainability
 
-NLTK (text processing)
+### 🧠 How It Works
 
+User uploads a resume and provides a job description
 
+Resume text is extracted and cleaned
+
+Resume is split into skills and experience sections
+
+Similarity is computed using:
+
+TF-IDF for keyword overlap
+
+Sentence-BERT for semantic relevance
+
+Explainability layer:
+
+Extracts overlapping skills
+
+Identifies top matching resume sentences
+
+Results are returned via API and rendered in the UI
+
+sentence-transformers
+
+NLTK
